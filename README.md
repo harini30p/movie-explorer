@@ -2,6 +2,8 @@
 
 CineScope is a modern, responsive web application designed for discovering movies and curating a personalized watchlist. Powered by the OMDb API, CineScope allows film enthusiasts to search across thousands of titles, browse comprehensive movie metadata in an accessible modal dialog, and organize their watchlists with persistent session tracking.
 
+**Live Demo:** [https://movie-explorer-murex-two.vercel.app/](https://movie-explorer-murex-two.vercel.app/)
+
 ---
 
 ## Features
