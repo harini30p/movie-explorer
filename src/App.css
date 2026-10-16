@@ -193,6 +193,14 @@
   color: var(--color-text-muted);
 }
 
+.debouncing-status {
+  color: var(--color-accent);
+  opacity: 0.9;
+  font-style: italic;
+  display: inline-flex;
+  align-items: center;
+}
+
 /* Movies Grid */
 .movies-grid {
   display: grid;
@@ -450,7 +458,18 @@
 }
 
 .empty-state--compact {
-  padding: 2rem 1rem;
+  padding: 2.5rem 1.5rem;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.empty-icon--sm {
+  font-size: 2.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn-reset-filter {
+  margin-top: 1rem;
 }
 
 .empty-icon,
@@ -535,6 +554,89 @@
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Watchlist Progress Summary Styles
+   ========================================================================== */
+.watchlist-progress-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.progress-stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  transition: var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+}
+
+.progress-stat-card:hover {
+  background-color: var(--color-bg-elevated);
+  border-color: var(--color-border-hover);
+}
+
+.progress-stat-card--plan {
+  border-left: 3px solid var(--color-warning);
+}
+
+.progress-stat-card--watched {
+  border-left: 3px solid var(--color-success);
+}
+
+.progress-stat-card--completion {
+  border-left: 3px solid var(--color-primary);
+}
+
+.progress-stat-label {
+  font-size: 0.775rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.progress-stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1.2;
+}
+
+.completion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.completion-pct {
+  font-size: 1.35rem;
+  color: var(--color-primary);
+}
+
+.completion-progress-track {
+  width: 100%;
+  height: 6px;
+  background-color: var(--color-bg-base);
+  border-radius: var(--radius-full);
+  margin-top: 0.65rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.completion-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  border-radius: var(--radius-full);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .filter-button-group {

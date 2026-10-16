@@ -65,9 +65,14 @@ export const MovieDetailsModal: React.FC<MovieDetailsModalProps> = ({
     };
   }, [isOpen, movie]);
 
-  // Focus management: focus the close button when opened
+  const previousActiveElementRef = useRef<HTMLElement | null>(null);
+
+  // Focus management: capture previous element, lock body scroll, focus close button, and restore focus on close
   useEffect(() => {
     if (isOpen) {
+      // Record currently focused element before opening modal
+      previousActiveElementRef.current = document.activeElement as HTMLElement | null;
+
       // Prevent body scrolling while modal is open
       const originalOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
@@ -79,11 +84,13 @@ export const MovieDetailsModal: React.FC<MovieDetailsModalProps> = ({
       return () => {
         document.body.style.overflow = originalOverflow;
         clearTimeout(focusTimer);
+        // Safely restore focus to previous trigger element on close
+        previousActiveElementRef.current?.focus();
       };
     }
   }, [isOpen]);
 
-  // Keyboard navigation: Escape key closes modal
+  // Keyboard navigation: Escape key closes modal & Tab/Shift+Tab focus trap
   useEffect(() => {
     if (!isOpen) return;
 
@@ -91,6 +98,41 @@ export const MovieDetailsModal: React.FC<MovieDetailsModalProps> = ({
       if (e.key === 'Escape') {
         e.preventDefault();
         onClose();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const dialogNode = modalContentRef.current;
+        if (!dialogNode) return;
+
+        // Query all focusable interactive elements within the dialog
+        const focusableElements = Array.from(
+          dialogNode.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter((el) => el.offsetParent !== null); // Ensure element is visible
+
+        if (focusableElements.length === 0) {
+          e.preventDefault();
+          return;
+        }
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        // Shift + Tab: wrapping from first to last
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement || !dialogNode.contains(document.activeElement)) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          // Tab: wrapping from last to first
+          if (document.activeElement === lastElement || !dialogNode.contains(document.activeElement)) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
       }
     };
 

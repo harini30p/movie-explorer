@@ -13,6 +13,7 @@ export function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [movies, setMovies] = useState<Movie[]>(() => movieService.getAllMovies());
   const [isLoading, setIsLoading] = useState(false);
+  const [isDebouncing, setIsDebouncing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
@@ -43,6 +44,9 @@ export function App() {
     const abortController = new AbortController();
 
     const timerId = window.setTimeout(async () => {
+      // Debounce delay has concluded
+      setIsDebouncing(false);
+
       // Reset pagination state when the search executes
       setCurrentPage(1);
       setIsLoadingMore(false);
@@ -182,6 +186,11 @@ export function App() {
     return new Set(watchlist.map((item) => item.movie.id));
   }, [watchlist]);
 
+  const handleSearchChange = useCallback((newQuery: string) => {
+    setSearchQuery(newQuery);
+    setIsDebouncing(Boolean(newQuery.trim()));
+  }, []);
+
   return (
     <div className="app-layout">
       <Header
@@ -203,8 +212,11 @@ export function App() {
 
           <SearchBar
             searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
+            onSearchChange={handleSearchChange}
             resultCount={movies.length}
+            totalResults={totalResults}
+            isSearchActive={isSearchActive}
+            isDebouncing={isDebouncing}
             isLoading={isLoading}
           />
         </section>

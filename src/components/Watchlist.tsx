@@ -28,8 +28,10 @@ export const Watchlist: React.FC<WatchlistProps> = ({
     return item.status === filter;
   });
 
+  const totalCount = items.length;
   const planCount = items.filter((i) => i.status === 'plan_to_watch').length;
   const watchedCount = items.filter((i) => i.status === 'watched').length;
+  const completionPercentage = totalCount > 0 ? Math.round((watchedCount / totalCount) * 100) : 0;
 
   return (
     <section id="watchlist-section" className="watchlist-section" aria-labelledby="watchlist-heading">
@@ -38,23 +40,25 @@ export const Watchlist: React.FC<WatchlistProps> = ({
           <h2 id="watchlist-heading" className="section-title">
             Your Watchlist
           </h2>
-          <span className="watchlist-badge">{items.length}</span>
+          <span className="watchlist-badge">{totalCount}</span>
         </div>
 
-        {items.length > 0 && (
+        {totalCount > 0 && (
           <div className="watchlist-controls">
             <div className="filter-button-group" role="group" aria-label="Filter watchlist by status">
               <button
                 type="button"
                 className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
                 onClick={() => setFilter('all')}
+                aria-pressed={filter === 'all'}
               >
-                All ({items.length})
+                All Movies ({totalCount})
               </button>
               <button
                 type="button"
                 className={`filter-btn ${filter === 'plan_to_watch' ? 'active' : ''}`}
                 onClick={() => setFilter('plan_to_watch')}
+                aria-pressed={filter === 'plan_to_watch'}
               >
                 Plan to Watch ({planCount})
               </button>
@@ -62,6 +66,7 @@ export const Watchlist: React.FC<WatchlistProps> = ({
                 type="button"
                 className={`filter-btn ${filter === 'watched' ? 'active' : ''}`}
                 onClick={() => setFilter('watched')}
+                aria-pressed={filter === 'watched'}
               >
                 Watched ({watchedCount})
               </button>
@@ -80,6 +85,41 @@ export const Watchlist: React.FC<WatchlistProps> = ({
         )}
       </div>
 
+      {/* Progress Summary Section */}
+      <div className="watchlist-progress-summary" aria-label="Watchlist progress statistics">
+        <div className="progress-stat-card">
+          <span className="progress-stat-label">Total Movies</span>
+          <span className="progress-stat-value">{totalCount}</span>
+        </div>
+        <div className="progress-stat-card progress-stat-card--plan">
+          <span className="progress-stat-label">Plan to Watch</span>
+          <span className="progress-stat-value">{planCount}</span>
+        </div>
+        <div className="progress-stat-card progress-stat-card--watched">
+          <span className="progress-stat-label">Watched</span>
+          <span className="progress-stat-value">{watchedCount}</span>
+        </div>
+        <div className="progress-stat-card progress-stat-card--completion">
+          <div className="completion-header">
+            <span className="progress-stat-label">Completion</span>
+            <span className="progress-stat-value completion-pct">{completionPercentage}%</span>
+          </div>
+          <div
+            className="completion-progress-track"
+            role="progressbar"
+            aria-valuenow={completionPercentage}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`Watchlist completion: ${completionPercentage}%`}
+          >
+            <div
+              className="completion-progress-bar"
+              style={{ width: `${completionPercentage}%` }}
+            />
+          </div>
+        </div>
+      </div>
+
       {items.length === 0 ? (
         <div className="empty-state empty-state--watchlist" role="status">
           <div className="empty-icon" aria-hidden="true">
@@ -92,9 +132,26 @@ export const Watchlist: React.FC<WatchlistProps> = ({
         </div>
       ) : filteredItems.length === 0 ? (
         <div className="empty-state empty-state--compact" role="status">
+          <div className="empty-icon empty-icon--sm" aria-hidden="true">
+            {filter === 'watched' ? '🎬' : '⏳'}
+          </div>
+          <h3 className="empty-title">
+            {filter === 'watched'
+              ? 'No movies marked as Watched yet'
+              : 'No movies in Plan to Watch'}
+          </h3>
           <p className="empty-description">
-            No movies in this category ({filter === 'watched' ? 'Watched' : 'Plan to Watch'}).
+            {filter === 'watched'
+              ? 'Mark movies as "Watched" once you\'ve finished viewing them to keep track of your journey.'
+              : 'Add movies to your "Plan to Watch" list to organize what to see next.'}
           </p>
+          <button
+            type="button"
+            className="btn btn-sm btn-secondary btn-reset-filter"
+            onClick={() => setFilter('all')}
+          >
+            Show All Movies ({items.length})
+          </button>
         </div>
       ) : (
         <div className="watchlist-grid" role="list">
