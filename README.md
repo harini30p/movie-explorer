@@ -34,16 +34,6 @@ CineScope is a modern, responsive web application designed for discovering movie
 
 ---
 
-## Screenshots
-
-> _Screenshots will be placed here._
-
-- **Discovery Grid & Search Bar**: `<!-- Placeholder: /screenshots/discovery-grid.png -->`
-- **Movie Details Modal**: `<!-- Placeholder: /screenshots/details-modal.png -->`
-- **Watchlist & Progress Summary**: `<!-- Placeholder: /screenshots/watchlist-view.png -->`
-
----
-
 ## Prerequisites
 
 Ensure you have the following installed on your machine:
